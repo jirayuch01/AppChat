@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="image/favicon.ico">
+    <link rel="shortcut icon" type="image/ico" href="image/favicon.ico">
+    <title>Board Chat</title>
+    <link rel="stylesheet" href="./assets/css/bootstrap2.min.css">
+    <link rel="stylesheet" href="./assets/css/sb-admin-2.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./assets/css/cursor.css">
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+    <style>
+        hr.style5 {
+            background-color: #fff;
+            border-top: 1px dashed #8c8b8b;
+        }
+    </style>
+    <link rel="stylesheet" href="./assets/css/style.css"> {% if not error %}
+    <script src='/socket.io/socket.io.js'></script> {% endif %}
+</head>
+
+<body>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript" src="/assets/js/map.js"></script>
+           
+    {% if error %}
+    <h3 class="error"> {{ error }} </h3>
+    <div class="login-page">
+        <div class="form">
+            <div style="margin-top: 18px;">
+                <form class="register" method="post" style="display: none;">
+                    <h1>Register Page</h1>
+                    <input type="text" name="username" placeholder="username">
+                    <input type="password" name="password" placeholder="password">
+                    <input type="text" name="room" placeholder="room">
+                    <button type="submit">create</button>
+                    <b>
+                        <p class="message">Already registered?&nbsp;&nbsp;
+                            <a href="#">Sign In</a>
+                        </p>
+                    </b>
+                </form>
+                <form class="login" method="post">
+                    <h1>Login Page</h1>
+                    <input type="text" name="username" placeholder="username">
+                    <input type="password" name="password" placeholder="password">
+                    <input type="text" name="room" placeholder="room">
+                    <button type="submit">login</button>
+                    <b>
+                        <p class="message">Not registered?&nbsp;&nbsp;
+                            <a href="#">Create an account</a>
+                        </p>
+                    </b>
+                </form>
+            </div>
+        </div>
+    </div>
+    <center>
+        <p style="color: black;" class="m-0 text-center">
+            Copyright &copy; 2017 Chat App Developed
+            <br>by
+            <a style="color: orangered;" target="_blank" href="https://web.facebook.com/JIch01beer" target="_blank">
+                <b>Jirayu Chinnawong
+                    <b>
+            </a>
+        </p>
+    </center>
+    <script src="/assets/js/unauth.js"></script> {% else %}
+
+    <div id="wrapper">
+        <nav class="navbar navbar-inverse bg-inverse navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <a class="navbar-brand" href="/" style="color: #ff3399;">
+                <kbd style="background-color: pink; color: red"><i class="fa fa-comments" aria-hidden="true"></i></kbd> Board Chat</a>
+        </nav>
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <center>
+                            <h1 class="page-header">Welcome to "
+                                <span style="color: #ff3399;">
+                                    <i>{{ room }} </i>
+                                </span>" Room
+                            </h1>
+                        </center>
+                        <br>
+                        <div class="controls">
+                            <a href="#" class="logout-btn">
+                                <i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3" style="border:1px solid #999; height:564px;width:340px; overflow:scroll;overflow-x:hidden;overflow-y:scroll;">
+                            <h3>
+                                <b>Last Profiles <kbd style="font-size: 18px; background-color: pink; color: red"><span id="conunt">2</span></kbd> &nbsp;Online</b>
+                            </h3>
+                            <hr class="style5">
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <div style="font-weight:bold; color: blue">
+                                        <p></p>
+                                        <p style="cursor:pointer">
+                                            <b>&nbsp;&nbsp;&nbsp;<span style="color: #ff3399;">{{ username }}</span>
+                                            </b>
+                                            <span class="pull-right" title="online">
+                                                <i style="background-color: greenyellow; border-radius: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div> 
+                            </div>
+                            <hr class="style5">
+                            <h3>
+                                    <b>Map GPS</b>
+                                </h3>
+                                <div id="map_canvas" style="margin: 0; padding: 0; height: 300px; width: 290px;"></div>
+                                <hr class="style5">
+                            <div class="col-lg-12 customer-row animate" repeat="customer in customers">
+                                <as-customer></as-customer>
+                            </div>
+                        </div>
+                        <div class="col-lg-9" style="border:1px solid #999; overflow-y:hidden">
+                            <div class="form-horizontal">
+                                <br>
+                                <fieldset>
+                                    <legend>
+                                        <b>My Username is
+                                            <span style="color: #ff3399;" id="name">" 
+                                                {{ username }} 
+                                                "</span>
+                                        </b>
+                                    </legend>
+                                    <br>
+                                    <div class="chat">
+                                        <div class="chat-history">
+                                            <ul>
+                                            </ul>
+                                        </div>
+                                        <div class="chat-message clearfix">
+                                            <textarea name="message" placeholder="Type your message" rows="3" maxlength="110"></textarea>
+                                            <button onclick="initialize()"><i class="fa fa-map-marker" aria-hidden="true"></i> Localtion</button> 
+                                            <button type="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send</button>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <nav class="navbar navbar-inverse bg-inverse navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <br>
+        <p style="color: white;" class="m-0 text-center text-white">
+            Copyright &copy; 2017 Chat App Developed by
+            <a style="color: aqua;" target="_blank" href="https://web.facebook.com/JIch01beer" target="_blank">
+                <b>Jirayu Chinnawong
+                    <b>
+            </a>
+        </p>
+    </nav>
+    <script src="/assets/js/auth.js"></script> {% endif %}
+</body>
+
+</html>

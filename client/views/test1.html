@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html,
+        body,
+        #map-canvas {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body onload="initialize()">
+    <input id="canvas" type="text" value="Phuket, 83000, Thailand">
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript">
+        var geocoder;
+        var map;
+        function initialize() {
+            var mapOptions = {
+                center: new google.maps.LatLng(-34.397, 100.644),
+                zoom: 15,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById("map_canvas"),
+                mapOptions);
+            geocoder = new google.maps.Geocoder();
+            var canvas = document.getElementById('canvas').value;
+            geocoder.geocode({ 'address': canvas }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    map.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location
+                    });
+                } else {
+                    //alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
+    </script>
+    <div id="map_canvas" style="width:100%; height:40%"></div>
+    </script>
+</body>
+
+</html>
